@@ -568,14 +568,16 @@ bool Xbtf::compressGif(const Frame &frame, unsigned char *data,
     else
         hasAlpha = true;
 
-    GifFileType *gifFile = EGifOpenFileName(filename, 0);
+		int error;
+
+    GifFileType *gifFile = EGifOpenFileName(filename, 0, &error);
     if (gifFile == NULL)
     {
         fprintf(stderr, "Cannot create gif file: %s\n", filename);
         return false;
     }
 
-    ColorMapObject *colorMap = MakeMapObject(colorMapSize, NULL);
+    ColorMapObject *colorMap = GifMakeMapObject(colorMapSize, NULL);
 
     GifByteType *buffer = (GifByteType *)malloc(
         sizeof(GifFileType) * frame.width * frame.height*3);
@@ -604,7 +606,7 @@ bool Xbtf::compressGif(const Frame &frame, unsigned char *data,
     GifByteType *outputBuffer = (GifByteType *) malloc(
         frame.width * frame.height * sizeof(GifByteType));
 
-    if (QuantizeBuffer(frame.width, frame.height, &colorMapSize,
+    if (GifQuantizeBuffer(frame.width, frame.height, &colorMapSize,
         red, green, blue,
         outputBuffer, colorMap->Colors) == GIF_ERROR)
     {
@@ -640,7 +642,7 @@ bool Xbtf::compressGif(const Frame &frame, unsigned char *data,
 
     free(buffer);
     free(outputBuffer);
-    EGifCloseFile(gifFile);
+    EGifCloseFile(gifFile, &error);
 
     return true;
 }

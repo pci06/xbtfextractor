@@ -1,5 +1,7 @@
+LIBSQUISH=/home/xbmc/tmp/libsquish/
 CXX =g++
-CXXFLAGS =-Wall -g
+CXXFLAGS =-Wall -g -I$(LIBSQUISH)
+LDFLAGS= -L$(LIBSQUISH)
 
 
 INCLUDES = xbtf.h
@@ -11,7 +13,7 @@ EXECUTABLE = xbtfextractor
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(INCLUDES) $(OBJECTS) 
-	$(CXX) -o $@ $(OBJECTS) -lpthread -llzo2 -ljpeg -lpng -lgif -lsquish
+	$(CXX) $(LDFLAGS) -o $@ $(OBJECTS)  -lpthread -llzo2 -ljpeg -lpng -lgif -lsquish
 
 clean:
 	rm *.o $(EXECUTABLE); $(CTAGS)
